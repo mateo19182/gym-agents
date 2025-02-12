@@ -1,6 +1,4 @@
-# Agent
-
-smallagents looks decent, will need to create some new tools
+# SmolAgent
 
 - openTelemetry: https://huggingface.co/docs/smolagents/tutorials/inspect_runs
 
