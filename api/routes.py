@@ -1,13 +1,42 @@
 import os
+import json
+import uuid
 from fastapi import APIRouter, HTTPException, UploadFile, File, status
 from pydantic import BaseModel, Field
 from sqlalchemy import insert, text
 from typing import List
+from smolagents import CodeAgent, HfApiModel
 
 from agent.agent import agent
 from db import engine, gym_classes, add_document
 
 router = APIRouter()
+
+# Directory to store conversation memory files.
+CONVERSATION_DIR = "data/conversations"
+os.makedirs(CONVERSATION_DIR, exist_ok=True)
+
+def memory_file_path(conversation_id: str) -> str:
+    """Returns the file path for the conversation memory JSON file."""
+    return os.path.join(CONVERSATION_DIR, f"{conversation_id}.json")
+
+def load_conversation_memory(conversation_id: str) -> list:
+    """
+    Loads the conversation memory from a JSON file.
+    Returns a list of dicts with keys "role" and "content". If the file does not exist,
+    returns an empty history list.
+    """
+    path = memory_file_path(conversation_id)
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            return json.load(f)
+    return []  # No history yet
+
+def save_conversation_memory(conversation_id: str, memory: list) -> None:
+    """Stores the conversation memory (a list of messages) into a JSON file."""
+    path = memory_file_path(conversation_id)
+    with open(path, "w") as f:
+        json.dump(memory, f, indent=2)
 
 class QueryRequest(BaseModel):
     query: str = Field(..., description="The natural language query to process")
@@ -30,20 +59,9 @@ class GymClass(BaseModel):
             }
         }
 
-@router.post("/query", response_model=dict, status_code=status.HTTP_200_OK)
-async def query_agent(request: QueryRequest):
-    """
-    Process a natural language query using the combined agent (RAG + SQL).
-    The agent will choose the appropriate tool based on the query content.
-    """
-    try:
-        result = agent.run(request.query)
-        return {"result": result}
-    except Exception as error:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(error)
-        )
+class ChatRequest(BaseModel):
+    query: str
+    conversation_id: str = None  # Optional: if provided, we persist conversation history
 
 @router.post("/upload_document", status_code=status.HTTP_201_CREATED)
 async def upload_document(file: UploadFile = File(...)):
@@ -114,4 +132,39 @@ async def get_classes():
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(error)
-        ) 
+        )
+
+@router.post("/chat", response_model=dict, status_code=status.HTTP_200_OK)
+def chat_agent(request: ChatRequest):
+    """
+    Chat Agent endpoint that accepts a query and an optional conversation_id.
+    When a conversation_id is provided, the conversation history is loaded and saved in a JSON file.
+    If no conversation_id is provided, the agent operates statelessly.
+    """
+    conversation_id = request.conversation_id
+
+    # Build the prompt using conversation memory if a conversation_id is provided.
+    if conversation_id:
+        conversation_memory = load_conversation_memory(conversation_id)
+        # Build history text (e.g., "User: ...\nAssistant: ...\n")
+        history_prompt = ""
+        for msg in conversation_memory:
+            history_prompt += f"{msg['role']}: {msg['content']}\n"
+        prompt = history_prompt + f"User: {request.query}\n"
+    else:
+        prompt = request.query
+
+    try:
+        # Use the shared agent (as defined in agent/agent.py) for running the query.
+        response = agent.run(prompt)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    # If conversation memory is used, update the saved conversation.
+    if conversation_id:
+        conversation_memory = load_conversation_memory(conversation_id)
+        conversation_memory.append({"role": "User", "content": request.query})
+        conversation_memory.append({"role": "Assistant", "content": response})
+        save_conversation_memory(conversation_id, conversation_memory)
+
+    return {"conversation_id": conversation_id, "response": response}
