@@ -13,11 +13,12 @@ from sqlalchemy import (
 import os
 import dotenv
 from smolagents import GradioUI
+import json
 
 dotenv.load_dotenv()
 
 # Change the engine creation to use a file-based database
-engine = create_engine("sqlite:///gym_classes.db")
+engine = create_engine("sqlite:///data/gym_classes.db")
 metadata_obj = MetaData()
 
 # create gym classes SQL table
@@ -51,7 +52,6 @@ with engine.connect() as connection:
 
 inspector = inspect(engine)
 columns_info = [(col["name"], col["type"]) for col in inspector.get_columns("gym_classes")]
-
 table_description = "Columns:\n" + "\n".join([f"  - {name}: {col_type}" for name, col_type in columns_info])
 
 from smolagents import tool
@@ -74,12 +74,14 @@ def sql_engine(query: str) -> str:
     """
     # Create a new engine connection for each query
     engine = create_engine("sqlite:///data/gym_classes.db")
-    output = ""
+    results = []
     with engine.connect() as con:
-        rows = con.execute(text(query))
-        for row in rows:
-            output += "\n" + str(row)
-    return output
+        result_set = con.execute(text(query))
+        for row in result_set:
+            # Convert the row to a dict using the _mapping attribute
+            results.append(dict(row._mapping))
+    # Return a nicely formatted JSON string
+    return json.dumps(results, indent=2)
 
 
 from smolagents import CodeAgent, HfApiModel
@@ -88,12 +90,11 @@ from smolagents import CodeAgent, HfApiModel
 agent = CodeAgent(
     tools=[sql_engine],
     model=HfApiModel( token=os.getenv("HF_TOKEN")),
-    
 )
 
-print(table_description)
-
-input_query = input("Enter a query: ")
-agent.run(input_query)
+if __name__ == "__main__":
+    # This block runs only when the script is executed directly.
+    input_query = input("Enter a query: ")
+    agent.run(input_query)
 
 # GradioUI(agent).launch()

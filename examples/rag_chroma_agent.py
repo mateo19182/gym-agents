@@ -1,6 +1,5 @@
 import os
 
-import datasets
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma

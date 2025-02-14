@@ -3,3 +3,4 @@ data
 env
 chroma_db
 .gradio
+__pycache__
