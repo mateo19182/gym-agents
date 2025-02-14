@@ -1,0 +1,32 @@
+2025-02-14 13:09:50,809 - gym_api - INFO - Starting uvicorn server
+2025-02-14 13:09:56,480 - gym_api - INFO - Starting Gym Agent API
+2025-02-14 13:09:56,480 - gym_api - INFO - Initializing routes:
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /openapi.json [HEAD, GET]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /docs [HEAD, GET]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /docs/oauth2-redirect [HEAD, GET]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /redoc [HEAD, GET]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /query [POST]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /upload_document [POST]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /classes [POST]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → /classes [GET]
+2025-02-14 13:09:56,480 - gym_api - INFO -   → / [GET]
+2025-02-14 13:09:56,480 - gym_api - INFO - API initialization complete
+2025-02-14 13:09:56,543 - watchfiles.main - INFO - 4 changes detected
+2025-02-14 13:09:56,894 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:57,244 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:57,596 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:57,946 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:58,297 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:58,648 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:59,000 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:59,351 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:09:59,702 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:00,054 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:00,404 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:00,755 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:01,106 - watchfiles.main - INFO - 2 changes detected
+2025-02-14 13:10:01,707 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:02,058 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:02,408 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:02,759 - watchfiles.main - INFO - 1 change detected
+2025-02-14 13:10:03,109 - watchfiles.main - INFO - 1 change detected

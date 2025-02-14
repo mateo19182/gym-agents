@@ -48,15 +48,22 @@ def process_documents(documents):
                 docs_processed.append(new_doc)
     return docs_processed
 
-def initialize_vector_store():
-    """Initialize or load the vector store with documents."""
-    documents = load_documents()
-    processed_docs = process_documents(documents)
-    
+def get_vector_store():
+    """Get or initialize the vector store."""
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     
+    # First try to load existing store
+    if os.path.exists(chroma_directory):
+        return Chroma(
+            persist_directory=chroma_directory,
+            embedding_function=embeddings
+        )
+    
+    # Initialize new store if it doesn't exist
+    documents = load_documents()
+    processed_docs = process_documents(documents)
     return Chroma.from_documents(
         processed_docs, 
         embeddings, 
@@ -93,4 +100,4 @@ def add_document(file_path: str) -> int:
     return len(processed_chunks)
 
 # Initialize the vector store on module import
-vector_store = initialize_vector_store() 
+vector_store = get_vector_store() 
