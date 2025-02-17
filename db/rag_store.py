@@ -52,19 +52,22 @@ def get_vector_store():
     
     # First try to load existing store
     if os.path.exists(chroma_directory):
-        return Chroma(
+        vector_store = Chroma(
             persist_directory=chroma_directory,
             embedding_function=embeddings
         )
+        print(f"Vector store collection size: {vector_store._collection.count()}") 
     
     # Initialize new store if it doesn't exist
     documents = load_documents()
     processed_docs = process_documents(documents)
-    return Chroma.from_documents(
+    vector_store = Chroma.from_documents(
         processed_docs, 
         embeddings, 
         persist_directory=chroma_directory
     )
+    print(f"Vector store collection size: {vector_store._collection.count()}") 
+    return vector_store
 
 def add_document(file_path: str) -> int:
     """
@@ -93,6 +96,7 @@ def add_document(file_path: str) -> int:
         embedding_function=embeddings
     )
     vector_store.add_documents(processed_chunks)
+    vector_store.persist()  # Make sure to persist after adding documents
     
     return len(processed_chunks)
 

@@ -10,12 +10,13 @@ import datetime
 dotenv.load_dotenv()
 
 # Load Spanish prompt templates
-with open("agent/agent_prompts.yaml", "r") as f:
+with open("agent/agent_prompts_es.yaml", "r") as f:
     spanish_prompt_templates = yaml.safe_load(f)
 
 # Get the current date and time
 current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+# Replace the placeholder in the Spanish prompt templates
 for key in spanish_prompt_templates:
     spanish_prompt_templates[key] = spanish_prompt_templates[key].replace("{{ current_datetime }}", current_datetime)
 

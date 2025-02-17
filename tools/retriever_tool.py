@@ -6,12 +6,13 @@ class RetrieverTool(Tool):
     description = (
         "Uses semantic search to retrieve parts of documentation that could be most relevant. "
         "It contains documents related to gym policies, rules, membership, and amenities information."
+        "The query should be short and concise to retrieve the most relevant information."
     )
     inputs = {
         "query": {
             "type": "string",
             "description": (
-                "The query to perform. Provide information aligned with your target documents. "
+                "The query to perform. Provide information aligned with your target documents."
                 "Use the affirmative form rather than a question."
             ),
         }
