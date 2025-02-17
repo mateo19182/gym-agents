@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+python-multipart
+langchain
+langchain-community
+langchain-core
+langchain-chroma
+chromadb
+tqdm
+python-dotenv
+pyyaml
+smolagents
+requests
+tiktoken

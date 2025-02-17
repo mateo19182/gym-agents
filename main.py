@@ -7,7 +7,7 @@ app.include_router(api_router)
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to the Gym Agent API. Use /query to submit queries, /upload_document to add RAG docs, and /add_class to update gym class data."
+        "message": "Welcome to the Gym Agent API. Use /docs to see available endpoints."
     }
 
 if __name__ == "__main__":

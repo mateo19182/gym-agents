@@ -3,8 +3,7 @@ from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
-from langchain_huggingface import HuggingFaceEmbeddings
-from transformers import AutoTokenizer
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 
 # Initialize paths and create directories
 data_directory = "data"
@@ -12,14 +11,10 @@ chroma_directory = "chroma_db"
 os.makedirs(data_directory, exist_ok=True)
 os.makedirs(chroma_directory, exist_ok=True)
 
-# Initialize tokenizer and text splitter
-tokenizer = AutoTokenizer.from_pretrained("thenlper/gte-small")
-text_splitter = RecursiveCharacterTextSplitter.from_huggingface_tokenizer(
-    tokenizer,
-    chunk_size=200,
-    chunk_overlap=20,
-    add_start_index=True,
-    strip_whitespace=True,
+# Initialize text splitter with simpler configuration
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=50,
     separators=["\n\n", "\n", ".", " ", ""],
 )
 
@@ -50,7 +45,8 @@ def process_documents(documents):
 
 def get_vector_store():
     """Get or initialize the vector store."""
-    embeddings = HuggingFaceEmbeddings(
+    embeddings = HuggingFaceInferenceAPIEmbeddings(
+        api_key=os.getenv("HF_TOKEN"),
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     
@@ -88,7 +84,8 @@ def add_document(file_path: str) -> int:
     processed_chunks = text_splitter.split_documents(new_docs)
     
     # Add to existing vector store
-    embeddings = HuggingFaceEmbeddings(
+    embeddings = HuggingFaceInferenceAPIEmbeddings(
+        api_key=os.getenv("HF_TOKEN"),
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     vector_store = Chroma(
@@ -100,4 +97,4 @@ def add_document(file_path: str) -> int:
     return len(processed_chunks)
 
 # Initialize the vector store on module import
-vector_store = get_vector_store() 
+vector_store = get_vector_store()
