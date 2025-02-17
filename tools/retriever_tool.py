@@ -6,6 +6,7 @@ class RetrieverTool(Tool):
     description = (
         "Uses semantic search to retrieve parts of documentation that could be most relevant. "
         "It contains documents related to gym policies, rules, membership, and amenities information."
+        "You should query this tool in English!"
     )
     inputs = {
         "query": {

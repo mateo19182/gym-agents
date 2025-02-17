@@ -8,6 +8,7 @@ docker run -p 8000:8000 --env-file .env gym-api
   - openTelemetry: <https://huggingface.co/docs/smolagents/tutorials/inspect_runs>
   - speech2text
   - español adapt
+    - traducir todo and use embeddings in english lol
 
 - available tools:
   - web search
