@@ -11,11 +11,11 @@ chroma_directory = "chroma_db"
 os.makedirs(data_directory, exist_ok=True)
 os.makedirs(chroma_directory, exist_ok=True)
 
-# Initialize text splitter with simpler configuration
+# Initialize text splitter with configuration adapted for Spanish documents
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=50,
-    separators=["\n\n", "\n", ".", " ", ""],
+    separators=["\n\n", "\n", ".", "?", "!", "¡", "¿", " ", ""],
 )
 
 def load_documents():
@@ -47,7 +47,7 @@ def get_vector_store():
     """Get or initialize the vector store."""
     embeddings = HuggingFaceInferenceAPIEmbeddings(
         api_key=os.getenv("HF_TOKEN"),
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
     
     # First try to load existing store
@@ -86,7 +86,7 @@ def add_document(file_path: str) -> int:
     # Add to existing vector store
     embeddings = HuggingFaceInferenceAPIEmbeddings(
         api_key=os.getenv("HF_TOKEN"),
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
     vector_store = Chroma(
         persist_directory=chroma_directory,

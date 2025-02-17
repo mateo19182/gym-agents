@@ -5,20 +5,20 @@ from sqlalchemy import create_engine, text
 @tool
 def sql_engine(query: str) -> str:
     """
-    Executes SQL queries on the gym_classes table.
-    The table has the following columns:
-      - class_id: INTEGER
-      - instructor_name: VARCHAR(32)
-      - class_name: VARCHAR(32)
-      - start_time: VARCHAR(5)
-      - duration_mins: INTEGER
+    Ejecuta consultas SQL en la tabla gym_clases.
+    La tabla tiene las siguientes columnas:
+      - clase_id: INTEGER
+      - nombre_monitor: VARCHAR(32)
+      - nombre_clase: VARCHAR(32)
+      - hora_comienzo: VARCHAR(5)
+      - duracion_minutos: INTEGER
 
     Args:
-        query: A valid SQL query to execute.
+        query: Una consulta SQL válida que se ejecutará.
     Returns:
-        A JSON-formatted string of the query results.
+        Un string en formato JSON con los resultados de la consulta.
     """
-    engine_local = create_engine("sqlite:///data/gym_classes.db")
+    engine_local = create_engine("sqlite:///data/gym_clases.db")
     results = []
     with engine_local.connect() as con:
         result_set = con.execute(text(query))

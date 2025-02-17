@@ -2,17 +2,16 @@ from smolagents import Tool
 from langchain_chroma import Chroma
 
 class RetrieverTool(Tool):
-    name = "retriever"
+    name = "buscador"
     description = (
-        "Uses semantic search to retrieve parts of documentation that could be most relevant. "
-        "It contains documents related to gym policies, rules, membership, and amenities information."
+        "Utiliza búsqueda semántica para recuperar partes de la documentación que podrían ser las más relevantes. "
+        "Contiene documentos relacionados con las políticas, normas, membresías y servicios del gimnasio."
     )
     inputs = {
         "query": {
             "type": "string",
             "description": (
-                "The query to perform. Provide information aligned with your target documents. "
-                "Use the affirmative form rather than a question."
+                "La consulta a realizar. Proporcione información enunciativa en lugar de plantearla como pregunta."
             ),
         }
     }
@@ -24,6 +23,6 @@ class RetrieverTool(Tool):
 
     def forward(self, query: str) -> str:
         docs = self.vector_store.similarity_search(query, k=3)
-        return "\nRetrieved documents:\n" + "".join(
-            [f"\n\n===== Document {i} =====\n{doc.page_content}" for i, doc in enumerate(docs)]
+        return "\nDocumentos recuperados:\n" + "".join(
+            [f"\n\n===== Documento {i} =====\n{doc.page_content}" for i, doc in enumerate(docs)]
         ) 

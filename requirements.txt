@@ -12,5 +12,6 @@ tqdm
 python-dotenv
 pyyaml
 smolagents
+smolagents[openai]
 requests
 tiktoken
