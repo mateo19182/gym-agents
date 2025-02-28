@@ -16,11 +16,14 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
-COPY . .
-
 # Create necessary directories
 RUN mkdir -p data/conversations chroma_db
+
+# Copy the .env file first
+COPY .env .
+
+# Copy the rest of the application
+COPY . .
 
 # Expose the port the app runs on
 EXPOSE 8000
